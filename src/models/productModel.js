@@ -38,4 +38,14 @@ const deleteProduct = async (id, sellerId) => {
   return result.rows[0];
 };
 
-module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct };
+const getLowStockProducts = async (sellerId, threshold = 5) => {
+  const result = await pool.query(
+    `SELECT id, name, stock, category FROM products
+     WHERE seller_id = $1 AND stock < $2
+     ORDER BY stock ASC`,
+    [sellerId, threshold]
+  );
+  return result.rows;
+};
+
+module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, getLowStockProducts };
