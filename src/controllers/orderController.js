@@ -2,7 +2,13 @@ const { createOrderFromCart, getOrdersByBuyer, getOrderById } = require('../mode
 
 const checkout = async (req, res) => {
   try {
-    const order = await createOrderFromCart(req.user.id);
+    const { address } = req.body;
+
+    if (!address) {
+      return res.status(400).json({ error: 'Delivery address is required' });
+    }
+
+    const order = await createOrderFromCart(req.user.id, address);
     res.status(201).json({ message: 'Order placed successfully', order });
   } catch (err) {
     res.status(400).json({ error: err.message });

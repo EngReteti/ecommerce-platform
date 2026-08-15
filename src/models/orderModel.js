@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-const createOrderFromCart = async (buyerId) => {
+const createOrderFromCart = async (buyerId, address) => {
   const client = await pool.connect();
 
   try {
@@ -33,6 +33,10 @@ const createOrderFromCart = async (buyerId) => {
       [buyerId, total]
     );
     const order = orderResult.rows[0];
+       await client.query(
+      `INSERT INTO deliveries (order_id, address) VALUES ($1, $2)`,
+      [order.id, address]
+    );
 
     for (const item of items) {
       await client.query(
