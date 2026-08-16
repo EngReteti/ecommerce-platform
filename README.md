@@ -1,6 +1,6 @@
 # E-Commerce Platform
 
-A full-featured e-commerce backend built in Termux (Android terminal), designed to help people list products, purchase items, manage orders, process payments, and track deliveries — with built-in impact features for sellers.
+A full-featured e-commerce backend, designed to help people list products, purchase items, manage orders, process payments, and track deliveries — with built-in impact features for sellers.
 
 ## Features
 
@@ -92,7 +92,8 @@ server runs on http://localhost:5000 by default
 
 ## API Documentation
 
-See API.md for the full list of endpoints.
+See [API.md](./API.md) for the full list of endpoints.
+
 
 ## License
 
