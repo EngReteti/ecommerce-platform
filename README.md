@@ -27,6 +27,7 @@ A full-featured e-commerce backend built in Termux (Android terminal), designed 
 
 ## Project Structure
 
+```text
 src/
 ├── config/       # Database connection setup
 ├── controllers/  # Request handling and business logic
@@ -36,7 +37,7 @@ src/
 ├── routes/       # API endpoint definitions
 ├── app.js        # Express app setup
 └── server.js     # Entry point / server listener
-
+```
 
 ## Getting Started
 
@@ -50,10 +51,12 @@ src/
 git clone https://github.com/EngReteti/ecommerce-platform.git
 cd ecommerce-platform
 npm install
+```
 
 ## Environment Setup
 
 Create a .env file in the root directory with the following:
+```env
 
 DB_USER=postgres
 DB_HOST=127.0.0.1
@@ -71,17 +74,21 @@ MPESA_PASSKEY=your_mpesa_passkey
 MPESA_CALLBACK_URL=your_callback_url
 AIRTEL_CLIENT_ID=your_airtel_client_id
 AIRTEL_CLIENT_SECRET=your_airtel_client_secret
+```
 
 ## Database Setup
 
+```bash
 psql -U postgres -d ecommerce_db -f src/migrations/001_init_schema.sql
 psql -U postgres -d ecommerce_db -f src/migrations/002_add_cart.sql
 psql -U postgres -d ecommerce_db -f src/migrations/003_add_reviews.sql
+```
 
 ## Running the Server
 
 npm run dev
-server runs on http://localhost:5000 by default.
+server runs on http://localhost:5000 by default
+
 
 ## API Documentation
 
