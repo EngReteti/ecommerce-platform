@@ -122,6 +122,7 @@ Use a process manager like **PM2** to keep the API server alive:
 ```bash
 npm install -g pm2
 pm2 start src/server.js --name "ecommerce-api"
+```
 
 ## License
 
