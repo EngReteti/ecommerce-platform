@@ -1,5 +1,9 @@
 # E-Commerce Platform
 
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v14+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 A full-featured e-commerce backend, designed to help people list products, purchase items, manage orders, process payments, and track deliveries — with built-in impact features for sellers.
 
 ## Features
@@ -86,14 +90,19 @@ psql -U postgres -d ecommerce_db -f src/migrations/003_add_reviews.sql
 
 ## Running the Server
 
+```bash
 npm run dev
-server runs on http://localhost:5000 by default
 
+Server runs on http://localhost:5000 by default.
 
 ## API Documentation
 
 See [API.md](./API.md) for the full list of endpoints.
 
+'``markdown
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
