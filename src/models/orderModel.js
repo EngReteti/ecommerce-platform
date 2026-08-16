@@ -87,4 +87,48 @@ const getOrderById = async (orderId, buyerId) => {
   return { ...orderResult.rows[0], items: itemsResult.rows };
 };
 
-module.exports = { createOrderFromCart, getOrdersByBuyer, getOrderById };
+const getSellerSalesSummary = async (sellerId) => {
+  const result = await pool.query(
+    `SELECT COUNT(DISTINCT orders.id) AS total_orders,
+            COALESCE(SUM(order_items.quantity * order_items.price), 0) AS total_revenue
+     FROM order_items
+     JOIN orders ON order_items.order_id = orders.id
+     JOIN products ON order_items.product_id = products.id
+     WHERE products.seller_id = $1 AND orders.status = 'paid'`,
+    [sellerId]
+  );
+  return result.rows[0];
+};
+
+const getSellerTopProducts = async (sellerId, limit = 5) => {
+  const result = await pool.query(
+    `SELECT products.id, products.name,
+            SUM(order_items.quantity) AS units_sold,
+            SUM(order_items.quantity * order_items.price) AS revenue
+     FROM order_items
+     JOIN orders ON order_items.order_id = orders.id
+     JOIN products ON order_items.product_id = products.id
+     WHERE products.seller_id = $1 AND orders.status = 'paid'
+     GROUP BY products.id, products.name
+     ORDER BY units_sold DESC
+     LIMIT $2`,
+    [sellerId, limit]
+  );
+  return result.rows;
+};
+
+const getSellerRecentOrders = async (sellerId, limit = 10) => {
+  const result = await pool.query(
+    `SELECT DISTINCT orders.id, orders.status, orders.total_amount, orders.created_at
+     FROM orders
+     JOIN order_items ON order_items.order_id = orders.id
+     JOIN products ON order_items.product_id = products.id
+     WHERE products.seller_id = $1
+     ORDER BY orders.created_at DESC
+     LIMIT $2`,
+    [sellerId, limit]
+  );
+  return result.rows;
+};
+
+module.exports = { createOrderFromCart, getOrdersByBuyer, getOrderById, getSellerSalesSummary, getSellerTopProducts, getSellerRecentOrders };
