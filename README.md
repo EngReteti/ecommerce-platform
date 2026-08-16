@@ -101,6 +101,28 @@ See [API.md](./API.md) for the full list of endpoints.
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
+## Deployment
+
+To deploy this backend service to production:
+
+### 1. Database Provisioning
+* Provision a managed PostgreSQL instance (e.g., Supabase, Railway, or Render PostgreSQL).
+* Run the schema migration scripts in sequence using `psql`:
+  ```bash
+  psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/001_init_schema.sql
+  psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/002_add_cart.sql
+  psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/003_add_reviews.sql
+### 2. Environment Variables
+Inject all keys defined in `.env` into your host's secrets settings:
+* Set `NODE_ENV=production`.
+* Ensure `MPESA_CALLBACK_URL` points to your live, SSL-secured domain (`https://...`).
+
+### 3. Server Management
+Use a process manager like **PM2** to keep the API server alive:
+```bash
+npm install -g pm2
+pm2 start src/server.js --name "ecommerce-api"
+
 ## License
 
 MIT
