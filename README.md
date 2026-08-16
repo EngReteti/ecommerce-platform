@@ -96,7 +96,7 @@ Server runs on http://localhost:5000 by default.
 
 See [API.md](./API.md) for the full list of endpoints.
 
-'``markdown
+
 ## Contributing
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
