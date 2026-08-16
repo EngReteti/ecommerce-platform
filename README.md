@@ -104,6 +104,7 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ## Deployment
 
 To deploy this backend service to production:
+This service is deployed live on **Render** as a cloud Web Service. To replicate or deploy your own instance:
 
 ### 1. Database Provisioning
 * Provision a managed PostgreSQL instance (e.g., Supabase, Railway, or Render PostgreSQL).
