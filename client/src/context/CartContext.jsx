@@ -4,19 +4,26 @@ export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('ecomerce_cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem('ecom_cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('ecomerce_cart', JSON.stringify(cart));
+    try {
+      localStorage.setItem('ecom_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error("Failed to save cart to localStorage", e);
+    }
   }, [cart]);
 
   const addToCart = async (product) => {
     const productId = product.id || product._id;
     const quantity = 1;
 
-    // Sync with backend database cart
     try {
       const token = localStorage.getItem('token');
       if (token) {
@@ -37,7 +44,7 @@ export const CartProvider = ({ children }) => {
       const existingIndex = prevCart.findIndex((item) => (item.id || item._id) === productId);
       if (existingIndex > -1) {
         return prevCart.map((item, index) =>
-          index === existingIndex ? { ...item, quantity: item.quantity + 1 } : item
+          index === existingIndex ? { ...item, quantity: (item.quantity || 1) + 1 } : item
         );
       }
       return [...prevCart, { ...product, id: productId, quantity: 1 }];
@@ -82,6 +89,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    localStorage.removeItem('ecom_cart');
   };
 
   return (

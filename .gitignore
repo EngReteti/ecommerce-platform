@@ -2,3 +2,7 @@ node_modules/
 .env
 *.log
 .env
+patch_*.js
+patch_*.py
+fix_*.js
+update_*.js

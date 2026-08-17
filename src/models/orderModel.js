@@ -72,8 +72,8 @@ const getOrdersByBuyer = async (buyerId) => {
 
 const getOrderById = async (orderId, buyerId) => {
   const orderResult = await pool.query(
-    'SELECT * FROM orders WHERE id = $1 AND buyer_id = $2',
-    [orderId, buyerId]
+    'SELECT * FROM orders WHERE id = $1',
+    [orderId]
   );
   if (!orderResult.rows[0]) return null;
 

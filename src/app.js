@@ -19,7 +19,6 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
-
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
@@ -30,7 +29,6 @@ app.use('/api/airtel', airtelRoutes);
 app.use('/api/deliveries', deliveryRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
-
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/db-test', async (req, res) => {
   try {
@@ -40,5 +38,4 @@ app.get('/db-test', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 module.exports = app;
