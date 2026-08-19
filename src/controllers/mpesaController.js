@@ -80,6 +80,16 @@ const initiateMpesaPayment = async (req, res) => {
     });
   } catch (err) {
     console.error('MPESA DEBUG FULL ERROR:', err);
+    if (err.response) {
+      console.error('RESPONSE HEADERS:', JSON.stringify(err.response.headers));
+      console.error('RESPONSE DATA TYPE:', typeof err.response.data);
+      console.error('RESPONSE DATA RAW:', err.response.data);
+      console.error('RESPONSE STATUS TEXT:', err.response.statusText);
+    } else if (err.request) {
+      console.error('NO RESPONSE RECEIVED - request was made but no response came back');
+    } else {
+      console.error('ERROR SETTING UP REQUEST:', err.message);
+    }
     res.status(500).json({
       error: err.response ? err.response.data : err.message,
       errorType: err.name,
