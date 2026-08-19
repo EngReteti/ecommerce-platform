@@ -4,6 +4,10 @@ const { createPayment, updatePaymentStatus } = require('../models/paymentModel')
 const pool = require('../config/db');
 
 const getAccessToken = async () => {
+  console.log('KEY LENGTH:', (process.env.MPESA_CONSUMER_KEY || '').length);
+  console.log('SECRET LENGTH:', (process.env.MPESA_CONSUMER_SECRET || '').length);
+  console.log('KEY JSON:', JSON.stringify(process.env.MPESA_CONSUMER_KEY));
+  console.log('SECRET JSON:', JSON.stringify(process.env.MPESA_CONSUMER_SECRET));
   const auth = Buffer.from(
     `${process.env.MPESA_CONSUMER_KEY}:${process.env.MPESA_CONSUMER_SECRET}`
   ).toString('base64');
