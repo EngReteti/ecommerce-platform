@@ -75,7 +75,13 @@ const initiateMpesaPayment = async (req, res) => {
       payment,
     });
   } catch (err) {
-    res.status(500).json({ error: err.response ? err.response.data : err.message });
+    console.error('MPESA DEBUG FULL ERROR:', err);
+    res.status(500).json({
+      error: err.response ? err.response.data : err.message,
+      errorType: err.name,
+      errorString: String(err),
+      stack: err.stack
+    });
   }
 };
 
