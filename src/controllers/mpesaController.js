@@ -4,13 +4,10 @@ const { createPayment, updatePaymentStatus } = require('../models/paymentModel')
 const pool = require('../config/db');
 
 const getAccessToken = async () => {
-  console.log('KEY LENGTH:', (process.env.MPESA_CONSUMER_KEY || '').length);
-  console.log('SECRET LENGTH:', (process.env.MPESA_CONSUMER_SECRET || '').length);
-  console.log('KEY JSON:', JSON.stringify(process.env.MPESA_CONSUMER_KEY));
-  console.log('SECRET JSON:', JSON.stringify(process.env.MPESA_CONSUMER_SECRET));
-  const auth = Buffer.from(
-    `${process.env.MPESA_CONSUMER_KEY}:${process.env.MPESA_CONSUMER_SECRET}`
-  ).toString('base64');
+
+  const key = (process.env.MPESA_CONSUMER_KEY || '').trim();
+  const secret = (process.env.MPESA_CONSUMER_SECRET || '').trim();
+  const auth = Buffer.from(`${key}:${secret}`).toString('base64');
 
   const response = await axios.get(
     'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
@@ -22,6 +19,9 @@ const getAccessToken = async () => {
 
 const initiateMpesaPayment = async (req, res) => {
   try {
+    const SHORTCODE = (process.env.MPESA_SHORTCODE || '').trim();
+    const PASSKEY = (process.env.MPESA_PASSKEY || '').trim();
+    const CALLBACK_URL = (process.env.MPESA_CALLBACK_URL || '').trim();
     const { orderId, phoneNumber } = req.body;
 
     if (!phoneNumber) {
@@ -43,21 +43,21 @@ const initiateMpesaPayment = async (req, res) => {
       .slice(0, 14);
 
     const password = Buffer.from(
-      `${process.env.MPESA_SHORTCODE}${process.env.MPESA_PASSKEY}${timestamp}`
+      `${SHORTCODE}${PASSKEY}${timestamp}`
     ).toString('base64');
 
     const stkResponse = await axios.post(
       'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
       {
-        BusinessShortCode: process.env.MPESA_SHORTCODE,
+        BusinessShortCode: SHORTCODE,
         Password: password,
         Timestamp: timestamp,
         TransactionType: 'CustomerPayBillOnline',
         Amount: Math.round(order.total_amount),
         PartyA: phoneNumber,
-        PartyB: process.env.MPESA_SHORTCODE,
+        PartyB: SHORTCODE,
         PhoneNumber: phoneNumber,
-        CallBackURL: process.env.MPESA_CALLBACK_URL,
+        CallBackURL: CALLBACK_URL,
         AccountReference: `Order${order.id}`,
         TransactionDesc: `Payment for order ${order.id}`,
       },
