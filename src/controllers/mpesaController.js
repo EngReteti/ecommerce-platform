@@ -10,7 +10,7 @@ const getAccessToken = async () => {
   const auth = Buffer.from(`${key}:${secret}`).toString('base64');
 
   const response = await axios.get(
-    'https://conducting-menu-boost-rational.trycloudflare.com/relay/oauth/v1/generate?grant_type=client_credentials',
+    'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
     { headers: { Authorization: `Basic ${auth}` } }
   );
 
@@ -47,7 +47,7 @@ const initiateMpesaPayment = async (req, res) => {
     ).toString('base64');
 
     const stkResponse = await axios.post(
-      'https://conducting-menu-boost-rational.trycloudflare.com/relay/mpesa/stkpush/v1/processrequest',
+      'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
       {
         BusinessShortCode: SHORTCODE,
         Password: password,
