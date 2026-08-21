@@ -151,7 +151,7 @@ export default function CartView() {
   };
 
   return (
-    <div style={{ padding: '20px', background: '#f9f9f9', borderRadius: '8px', marginTop: '20px', color: '#000' }}>
+    <div className="card" style={{ padding: '20px', marginTop: '20px' }}>
       <h2>Your Shopping Cart</h2>
 
       {safeCart.length === 0 ? (
@@ -159,22 +159,24 @@ export default function CartView() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
           {safeCart.map((item, index) => (
-            <div key={item.id || item._id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
+            <div key={item.id || item._id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--color-ink)', paddingBottom: '10px' }}>
               <div>
-                <h4 style={{ margin: '0', color: '#555', fontSize: '14px' }}>{item.name}</h4>
+                <h4 style={{ margin: '0', fontSize: '15px', fontFamily: 'var(--font-body)' }}>{item.name}</h4>
                 <p style={{ margin: '0', color: '#888', fontSize: '12px' }}>KES {item.price} x {item.quantity}</p>
               </div>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <button
                   onClick={() => decreaseQuantity(item.id || item._id)}
-                  style={{ background: '#dc3545', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                  className="btn"
+                  style={{ background: 'var(--color-red)', color: '#fff', padding: '5px 12px', boxShadow: '2px 2px 0px var(--color-ink)' }}
                 >
                   -
                 </button>
-                <span style={{ fontWeight: 'bold' }}>{item.quantity}</span>
+                <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{item.quantity}</span>
                 <button
                   onClick={() => addToCart(item)}
-                  style={{ background: '#28a745', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                  className="btn"
+                  style={{ background: 'var(--color-green)', color: '#fff', padding: '5px 12px', boxShadow: '2px 2px 0px var(--color-ink)' }}
                 >
                   +
                 </button>
@@ -185,11 +187,11 @@ export default function CartView() {
       )}
 
       <div style={{ marginTop: '20px' }}>
-        <h3>Total: KES {totalPrice.toFixed(2)}</h3>
+        <h3 style={{ color: 'var(--color-green)' }}>Total: KES {totalPrice.toFixed(2)}</h3>
 
         <div style={{ marginTop: '15px' }}>
           <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Delivery Address:</label>
-          <input id="delivery-address-input" type="text" defaultValue="Karen, Nairobi, Kenya" style={{ width: '100%', padding: '8px', color: '#000', background: '#fff', border: '1px solid #ccc', borderRadius: '4px' }} />
+          <input id="delivery-address-input" type="text" defaultValue="Karen, Nairobi, Kenya" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
         </div>
 
         <div style={{ marginTop: '15px' }}>
@@ -197,13 +199,15 @@ export default function CartView() {
           <div style={{ display: 'flex', gap: '10px' }}>
             <button
               onClick={() => { setPaymentMethod('mpesa'); setClientSecret(null); }}
-              style={{ flex: 1, padding: '10px', fontWeight: 'bold', border: paymentMethod === 'mpesa' ? '2px solid #007bff' : '1px solid #ccc', borderRadius: '4px', background: paymentMethod === 'mpesa' ? '#e7f1ff' : '#fff', cursor: 'pointer' }}
+              className="btn"
+              style={{ flex: 1, background: paymentMethod === 'mpesa' ? 'var(--color-marigold)' : '#fff' }}
             >
               M-Pesa
             </button>
             <button
               onClick={() => { setPaymentMethod('card'); setClientSecret(null); }}
-              style={{ flex: 1, padding: '10px', fontWeight: 'bold', border: paymentMethod === 'card' ? '2px solid #635bff' : '1px solid #ccc', borderRadius: '4px', background: paymentMethod === 'card' ? '#eeedff' : '#fff', cursor: 'pointer' }}
+              className="btn"
+              style={{ flex: 1, background: paymentMethod === 'card' ? 'var(--color-marigold)' : '#fff' }}
             >
               Card (Stripe)
             </button>
@@ -213,7 +217,7 @@ export default function CartView() {
         {paymentMethod === 'mpesa' && (
           <div style={{ marginTop: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>M-Pesa Phone Number:</label>
-            <input id="mpesa-phone-input" type="text" defaultValue="0758791006" style={{ width: '100%', padding: '8px', color: '#000', background: '#fff', border: '1px solid #ccc', borderRadius: '4px' }} />
+            <input id="mpesa-phone-input" type="text" defaultValue="0758791006" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
           </div>
         )}
 
@@ -221,7 +225,8 @@ export default function CartView() {
           <button
             onClick={handleCheckout}
             disabled={loading || safeCart.length === 0}
-            style={{ width: '100%', marginTop: '20px', background: safeCart.length === 0 ? '#cccccc' : '#007bff', color: 'white', padding: '12px', fontWeight: 'bold', border: 'none', borderRadius: '5px', cursor: safeCart.length === 0 ? 'not-allowed' : 'pointer' }}
+            className="btn btn-primary"
+            style={{ width: '100%', marginTop: '20px', opacity: safeCart.length === 0 ? 0.5 : 1, cursor: safeCart.length === 0 ? 'not-allowed' : 'pointer' }}
           >
             {loading ? 'Processing...' : 'Checkout & Pay'}
           </button>
@@ -241,7 +246,7 @@ export default function CartView() {
           </Elements>
         )}
 
-        {message && <p style={{ marginTop: '15px', fontWeight: 'bold', textAlign: 'center', color: message.includes('success') || message.includes('Creating') ? 'green' : 'red' }}>{message}</p>}
+        {message && <p style={{ marginTop: '15px', fontWeight: 'bold', textAlign: 'center', color: message.includes('success') || message.includes('Creating') ? 'var(--color-green)' : 'var(--color-red)' }}>{message}</p>}
       </div>
     </div>
   );
