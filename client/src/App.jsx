@@ -3,10 +3,12 @@ import CartView from './components/CartView';
 import LoginView from './components/LoginView';
 import { useCart } from './context/useCart';
 import './App.css';
+import MyOrdersView from './components/MyOrdersView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [products, setProducts] = useState([]);
+  const [activeView, setActiveView] = useState('shop');
+const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -81,7 +83,23 @@ export default function App() {
         ))}
       </div>
 
-      <CartView />
+      <div style={{ display: 'flex', gap: '10px', margin: '20px 0' }}>
+  <button
+    onClick={() => setActiveView('shop')}
+    style={{ flex: 1, padding: '10px', fontWeight: 'bold', border: activeView === 'shop' ? '2px solid #007bff' : '1px solid #ccc', borderRadius: '4px', background: activeView === 'shop' ? '#e7f1ff' : '#fff', cursor: 'pointer' }}
+  >
+    Shop
+  </button>
+  <button
+    onClick={() => setActiveView('orders')}
+    style={{ flex: 1, padding: '10px', fontWeight: 'bold', border: activeView === 'orders' ? '2px solid #007bff' : '1px solid #ccc', borderRadius: '4px', background: activeView === 'orders' ? '#e7f1ff' : '#fff', cursor: 'pointer' }}
+  >
+    My Orders
+  </button>
+</div>
+
+{activeView === 'shop' && <CartView />}
+{activeView === 'orders' && <MyOrdersView />}
     </div>
   );
 }

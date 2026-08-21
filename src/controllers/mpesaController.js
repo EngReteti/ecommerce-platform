@@ -11,7 +11,7 @@ const getAccessToken = async () => {
 
   const response = await axios.get(
     'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
-    { headers: { Authorization: `Basic ${auth}` } }
+    { headers: { Authorization: `Basic ${auth}`, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' } }
   );
 
   return response.data.access_token;
@@ -61,7 +61,7 @@ const initiateMpesaPayment = async (req, res) => {
         AccountReference: `Order${order.id}`,
         TransactionDesc: `Payment for order ${order.id}`,
       },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      { headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' } }
     );
 
     const checkoutRequestId = stkResponse.data.CheckoutRequestID;
