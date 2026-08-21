@@ -19,7 +19,7 @@ A full-featured e-commerce backend, designed to help people list products, purch
 
 ## Tech Stack
 
-- **Backend:** Node.js, Express
+- **Backend:** JavaScript, Node.js, Express
 - **Database:** PostgreSQL
 - **Authentication:** JWT, bcrypt
 - **Payments:** Stripe SDK, Safaricom Daraja API, Airtel Money API
