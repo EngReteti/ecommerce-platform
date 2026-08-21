@@ -47,8 +47,8 @@ export default function MyOrdersView() {
   }, []);
 
   const statusColor = (status) => {
-    if (status === 'delivered') return '#28a745';
-    if (status === 'in_transit' || status === 'dispatched') return '#007bff';
+    if (status === 'delivered') return 'var(--color-green)';
+    if (status === 'in_transit' || status === 'dispatched') return '#0066cc';
     return '#888';
   };
 
@@ -63,10 +63,10 @@ export default function MyOrdersView() {
   };
 
   if (loading) return <p style={{ padding: '20px' }}>Loading your orders...</p>;
-  if (error) return <p style={{ padding: '20px', color: 'red' }}>Error: {error}</p>;
+  if (error) return <p style={{ padding: '20px', color: 'var(--color-red)' }}>Error: {error}</p>;
 
   return (
-    <div style={{ padding: '20px', background: '#f9f9f9', borderRadius: '8px', marginTop: '20px', color: '#000' }}>
+    <div className="card" style={{ padding: '20px', marginTop: '20px' }}>
       <h2>My Orders</h2>
       {orders.length === 0 ? (
         <p style={{ color: '#666' }}>You haven't placed any orders yet.</p>
@@ -75,17 +75,17 @@ export default function MyOrdersView() {
           {orders.map((order) => {
             const delivery = deliveries[order.id];
             return (
-              <div key={order.id} style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '15px', background: '#fff' }}>
+              <div key={order.id} style={{ border: '2px solid var(--color-ink)', borderRadius: '8px', padding: '15px', background: '#fff', boxShadow: '3px 3px 0px var(--color-ink)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong>Order #{order.id}</strong>
-                  <span style={{ fontWeight: 'bold', color: order.status === 'paid' ? '#28a745' : '#dc3545' }}>
+                  <strong style={{ fontFamily: 'var(--font-display)', fontSize: '16px' }}>ORDER #{order.id}</strong>
+                  <span style={{ fontWeight: 'bold', color: order.status === 'paid' ? 'var(--color-green)' : 'var(--color-red)' }}>
                     {order.status === 'paid' ? 'Paid' : order.status}
                   </span>
                 </div>
                 <p style={{ margin: '8px 0 4px 0', color: '#555' }}>Total: KES {order.total_amount}</p>
 
                 {delivery ? (
-                  <div style={{ marginTop: '10px', padding: '10px', background: '#f0f4f8', borderRadius: '6px' }}>
+                  <div style={{ marginTop: '10px', padding: '10px', background: '#FDF8EE', borderRadius: '6px', border: '1px solid #ddd' }}>
                     <p style={{ margin: '0 0 4px 0', fontWeight: 'bold', color: statusColor(delivery.status) }}>
                       Delivery: {statusLabel(delivery.status)}
                     </p>
