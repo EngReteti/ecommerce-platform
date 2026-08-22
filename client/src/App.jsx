@@ -4,6 +4,7 @@ import LoginView from './components/LoginView';
 import { useCart } from './context/useCart';
 import './App.css';
 import MyOrdersView from './components/MyOrdersView';
+import AddProductView from './components/AddProductView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -65,6 +66,13 @@ export default function App() {
           <div key={product.id || product._id} className="card" style={{ padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>{product.name}</h3>
+{product.image_url && (
+  <img
+    src={product.image_url}
+    alt={product.name}
+    style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '4px', marginBottom: '10px', border: '2px solid var(--color-ink)' }}
+  />
+)}
               <p style={{ color: '#555', fontSize: '14px', fontFamily: 'var(--font-body)' }}>{product.description}</p>
             </div>
             <div>
@@ -95,9 +103,17 @@ export default function App() {
           My Orders
         </button>
       </div>
+<button
+  onClick={() => setActiveView('add-product')}
+  className="btn"
+  style={{ flex: 1, background: activeView === 'add-product' ? 'var(--color-marigold)' : '#fff' }}
+>
+  Sell
+</button>
 
       {activeView === 'shop' && <CartView />}
       {activeView === 'orders' && <MyOrdersView />}
+{activeView === 'add-product' && <AddProductView />}
     </div>
   );
 }
