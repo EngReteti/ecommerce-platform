@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const {
   addProduct,
   listProducts,
@@ -7,12 +5,15 @@ const {
   editProduct,
   removeProduct,
   lowStockAlerts,
+  myProducts,
 } = require('../controllers/productController');
+
 const { protect, sellerOnly } = require('../middleware/authMiddleware');
 const upload = require('../middleware/upload');
 
 router.get('/', listProducts);
 router.get('/low-stock', protect, sellerOnly, lowStockAlerts);
+router.get('/my-products', protect, sellerOnly, myProducts);
 router.get('/:id', getProduct);
 
 router.post('/upload-image', protect, sellerOnly, (req, res) => {

@@ -5,6 +5,7 @@ const {
   updateProduct,
   deleteProduct,
   getLowStockProducts,
+  getProductsBySeller,
 } = require('../models/productModel');
 
 const addProduct = async (req, res) => {
@@ -76,6 +77,15 @@ const removeProduct = async (req, res) => {
   }
 };
 
+const myProducts = async (req, res) => {
+  try {
+    const products = await getProductsBySeller(req.user.id);
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const lowStockAlerts = async (req, res) => {
   try {
     const threshold = req.query.threshold ? parseInt(req.query.threshold) : 5;
@@ -86,4 +96,4 @@ const lowStockAlerts = async (req, res) => {
   }
 };
 
-module.exports = { addProduct, listProducts, getProduct, editProduct, removeProduct, lowStockAlerts };
+module.exports = { addProduct, listProducts, getProduct, editProduct, removeProduct, lowStockAlerts, myProducts };
