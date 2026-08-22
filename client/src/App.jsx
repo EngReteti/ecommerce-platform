@@ -5,6 +5,7 @@ import { useCart } from './context/useCart';
 import './App.css';
 import MyOrdersView from './components/MyOrdersView';
 import AddProductView from './components/AddProductView';
+import MyProductsView from './components/MyProductsView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -111,9 +112,18 @@ export default function App() {
   Sell
 </button>
 
+<button
+  onClick={() => setActiveView('my-products')}
+  className="btn"
+  style={{ flex: 1, background: activeView === 'my-products' ? 'var(--color-marigold)' : '#fff' }}
+>
+  My Products
+</button>
+
       {activeView === 'shop' && <CartView />}
       {activeView === 'orders' && <MyOrdersView />}
 {activeView === 'add-product' && <AddProductView />}
+{activeView === 'my-products' && <MyProductsView />}
     </div>
   );
 }
