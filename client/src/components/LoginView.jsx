@@ -13,8 +13,8 @@ export default function LoginView({ onLoginSuccess }) {
     setError(null);
     setLoading(true);
 
-    const endpoint = isRegistering 
-      ? 'https://ecommerce-platform-09ag.onrender.com/api/auth/register' 
+    const endpoint = isRegistering
+      ? 'https://ecommerce-platform-09ag.onrender.com/api/auth/register'
       : 'https://ecommerce-platform-09ag.onrender.com/api/auth/login';
 
     const payload = isRegistering ? { name, email, password } : { email, password };
@@ -47,70 +47,74 @@ export default function LoginView({ onLoginSuccess }) {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', background: '#f9f9f9', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', color: '#333' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>{isRegistering ? 'Create Account' : 'Sign In'}</h2>
-      
-      {error && <p style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '30px' }}>
+        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '5px' }}>My E-Commerce Store</h1>
+        <h2 style={{ textAlign: 'center', fontSize: '16px', marginBottom: '20px', fontFamily: 'var(--font-body)', textTransform: 'none', letterSpacing: '0', fontWeight: '600', color: '#555' }}>
+          {isRegistering ? 'Create Account' : 'Sign In'}
+        </h2>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        {isRegistering && (
+        {error && <p style={{ color: 'var(--color-red)', marginBottom: '15px', textAlign: 'center', fontWeight: 'bold' }}>{error}</p>}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          {isRegistering && (
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name:</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Enter your name"
+                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '2px solid var(--color-ink)' }}
+              />
+            </div>
+          )}
+
           <div>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Name:</label>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Email:</label>
             <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Enter your name"
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+              placeholder="Enter your email"
+              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '2px solid var(--color-ink)' }}
             />
           </div>
-        )}
 
-        <div>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="Enter your email"
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-        </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '2px solid var(--color-ink)' }}
+            />
+          </div>
 
-        <div>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="Enter your password"
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ background: '#007bff', color: 'white', border: 'none', padding: '10px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
-        >
-          {loading ? 'Please wait...' : (isRegistering ? 'Register' : 'Login')}
-        </button>
-      </form>
-
-      <p style={{ marginTop: '15px', textAlign: 'center' }}>
-        {isRegistering ? 'Already have an account? ' : "Don't have an account? "}
-        <button
-          type="button"
-          onClick={() => setIsRegistering(!isRegistering)}
-          style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', textDecoration: 'underline', fontWeight: 'bold' }}
-        >
-          {isRegistering ? 'Login here' : 'Register here'}
-        </button>
-      </p>
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn btn-primary"
+            style={{ marginTop: '5px' }}
+          >
+            {loading ? 'Please wait...' : (isRegistering ? 'Register' : 'Login')}
+          </button>
+        </form>
+        <p style={{ marginTop: '20px', textAlign: 'center' }}>
+          {isRegistering ? 'Already have an account? ' : "Don't have an account? "}
+          <button
+            type="button"
+            onClick={() => setIsRegistering(!isRegistering)}
+            style={{ background: 'none', border: 'none', color: 'var(--color-green)', cursor: 'pointer', textDecoration: 'underline', fontWeight: 'bold' }}
+          >
+            {isRegistering ? 'Login here' : 'Register here'}
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
-
