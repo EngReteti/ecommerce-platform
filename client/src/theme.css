@@ -5,7 +5,7 @@
   --color-ink: #1A1A1A;
   --color-cream: #FDF8EE;
 
-  --font-display: 'Anton', sans-serif;
+  --font-display: 'Alfa Slab One', cursive;
   --font-body: 'Work Sans', sans-serif;
 }
 
@@ -23,7 +23,8 @@ body {
 h1, h2, h3 {
   font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0px;
+  line-height: 1.2;
   margin: 0;
 }
 
