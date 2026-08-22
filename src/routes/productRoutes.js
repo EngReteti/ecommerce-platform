@@ -27,9 +27,7 @@ router.post('/upload-image', protect, sellerOnly, (req, res) => {
     res.status(200).json({ imageUrl: req.file.path });
   });
 });
-  }
-  res.status(200).json({ imageUrl: req.file.path });
-});
+
 router.post('/', protect, sellerOnly, addProduct);
 router.put('/:id', protect, sellerOnly, editProduct);
 router.delete('/:id', protect, sellerOnly, removeProduct);
