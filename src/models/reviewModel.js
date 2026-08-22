@@ -4,7 +4,7 @@ const hasPurchasedProduct = async (buyerId, productId) => {
   const result = await pool.query(
     `SELECT order_items.id FROM order_items
      JOIN orders ON order_items.order_id = orders.id
-     WHERE orders.buyer_id = $1 AND order_items.product_id = $2
+     WHERE orders.buyer_id = $1 AND order_items.product_id = $2 AND orders.status = 'paid'
      LIMIT 1`,
     [buyerId, productId]
   );
