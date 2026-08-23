@@ -142,13 +142,14 @@ This service is deployed live on Render as a cloud Web Service, with a managed P
 2.**Environment Variables**
 Inject all values defined in .env into your host's secrets settings:
 ​Set NODE_ENV=production.
-​Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
+Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
 ​Ensure Cloudinary credentials are set for product image uploads.
 
 3. **Server Management**
 Run a process manager like PM2 to keep the API server alive:
 npm install -g pm2
 pm2 start src/server.js --name "ecommerce-api"
+```
 
 
 ## License
