@@ -139,6 +139,7 @@ Provision a managed PostgreSQL instance (e.g., Supabase, Railway, or Render Post
 psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/001_init_schema.sql
 psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/002_add_cart.sql
 psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/003_add_reviews.sql
+```
 
 ### 2. Environment Variables
 
@@ -157,6 +158,7 @@ Run a process manager like PM2 to keep the API server alive:
 ```bash
 npm install -g pm2
 pm2 start src/server.js --name "ecommerce-api"
+```
 
 ## License
 MIT
