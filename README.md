@@ -139,7 +139,7 @@ This service is deployed live on Render as a cloud Web Service, with a managed P
    psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/002_add_cart.sql
    psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/003_add_reviews.sql
   ```
-2.**Environment Variables**
+2. **Environment Variables**
 Inject all values defined in .env into your host's secrets settings:
 ​Set NODE_ENV=production.
 Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
