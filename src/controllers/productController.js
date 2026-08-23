@@ -16,12 +16,22 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ error: 'Name and price are required' });
     }
 
+    const numericPrice = parseFloat(price);
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+      return res.status(400).json({ error: 'Price must be a positive number' });
+    }
+
+    const numericStock = stock !== undefined ? parseInt(stock) : 0;
+    if (isNaN(numericStock) || numericStock < 0) {
+      return res.status(400).json({ error: 'Stock cannot be negative' });
+    }
+
     const product = await createProduct(
       req.user.id,
       name,
       description,
-      price,
-      stock || 0,
+      numericPrice,
+      numericStock,
       category,
       imageUrl
     );
@@ -55,6 +65,21 @@ const getProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
   try {
+    if (req.body.price !== undefined) {
+      const numericPrice = parseFloat(req.body.price);
+      if (isNaN(numericPrice) || numericPrice <= 0) {
+        return res.status(400).json({ error: 'Price must be a positive number' });
+      }
+      req.body.price = numericPrice;
+    }
+    if (req.body.stock !== undefined) {
+      const numericStock = parseInt(req.body.stock);
+      if (isNaN(numericStock) || numericStock < 0) {
+        return res.status(400).json({ error: 'Stock cannot be negative' });
+      }
+      req.body.stock = numericStock;
+    }
+
     const product = await updateProduct(req.params.id, req.user.id, req.body);
     if (!product) {
       return res.status(404).json({ error: 'Product not found or not yours to edit' });
