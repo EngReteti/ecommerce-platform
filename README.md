@@ -131,33 +131,32 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 This service is deployed live on Render as a cloud Web Service, with a managed PostgreSQL database also on Render, and images hosted on Cloudinary. To replicate or deploy your own instance:
 
-1. **Database Provisioning**
-   Provision a managed PostgreSQL instance (e.g., Supabase, Railway, or Render PostgreSQL). 
-   Run the schema migration scripts in sequence using `psql`:
-   ```bash
-   psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/001_init_schema.sql
-   psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/002_add_cart.sql
-   psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/003_add_reviews.sql
-  ```
+### 1. Database Provisioning
 
-2. **Environment Variables**
-   Inject all values defined in `.env` into your host's secrets settings:
+Provision a managed PostgreSQL instance (e.g., Supabase, Railway, or Render PostgreSQL). Run the schema migration scripts in sequence using `psql`:
 
-   ```bash
-   NODE_ENV=production
-   ```
-   Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
-   Ensure Cloudinary credentials are set for product image uploads.
+```bash
+psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/001_init_schema.sql
+psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/002_add_cart.sql
+psql -h <HOST> -U <USER> -d <DATABASE> -f src/migrations/003_add_reviews.sql
 
+### 2. Environment Variables
 
-3. **Server Management**
-   Run a process manager like PM2 to keep the API server alive:
+Inject all values defined in `.env` into your host's secrets settings:
 
-   ```bash
-   npm install -g pm2
-   pm2 start src/server.js --name "ecommerce-api"
-   ```
+```bash
+NODE_ENV=production
+```
+Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain. 
+Ensure Cloudinary credentials are set for product image uploads.
 
+### 3. Server Management
+
+Run a process manager like PM2 to keep the API server alive:
+
+```bash
+npm install -g pm2
+pm2 start src/server.js --name "ecommerce-api"
 
 ## License
 MIT
