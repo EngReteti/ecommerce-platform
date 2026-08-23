@@ -6,11 +6,15 @@ import './App.css';
 import MyOrdersView from './components/MyOrdersView';
 import AddProductView from './components/AddProductView';
 import MyProductsView from './components/MyProductsView';
+import ProductDetailView from './components/ProductDetailView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [activeView, setActiveView] = useState('shop');
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,6 +37,14 @@ export default function App() {
         });
     }
   }, [token]);
+
+const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
+
+const filteredProducts = products.filter((p) => {
+  const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+  return matchesSearch && matchesCategory;
+});
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -62,9 +74,32 @@ export default function App() {
       {loading && <p>Loading products from backend...</p>}
       {error && <p style={{ color: 'var(--color-red)' }}>Error: {error}</p>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-        {products.map((product) => (
-          <div key={product.id || product._id} className="card" style={{ padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+  <input
+    type="text"
+    placeholder="Search products..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    style={{ flex: 2, minWidth: '150px', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }}
+  />
+  <select
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    style={{ flex: 1, minWidth: '120px', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }}
+  >
+    {categories.map((cat) => (
+      <option key={cat} value={cat}>{cat === 'all' ? 'All Categories' : cat}</option>
+    ))}
+  </select>
+</div>
+
+{filteredProducts.length === 0 && !loading && (
+  <p style={{ textAlign: 'center', color: '#888', padding: '20px' }}>No products match your search.</p>
+)}
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+  {filteredProducts.map((product) => (
+          <div key={product.id || product._id} onClick={() => setSelectedProduct(product)} className="card" style={{ padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer' }}>
             <div>
               <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>{product.name}</h3>
 {product.image_url && (
@@ -80,7 +115,7 @@ export default function App() {
               <p style={{ fontWeight: 'bold', margin: '10px 0', fontSize: '20px', color: 'var(--color-green)' }}>
                 KES {product.price}
               </p>
-              <button onClick={() => addToCart(product)} className="btn btn-primary" style={{ width: '100%' }}>
+              <button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="btn btn-primary" style={{ width: '100%' }}>
                 Add to Cart
               </button>
             </div>
@@ -120,7 +155,14 @@ export default function App() {
   My Products
 </button>
 
-      {activeView === 'shop' && <CartView />}
+      {activeView === 'shop' && selectedProduct && (
+  <ProductDetailView
+    product={selectedProduct}
+    onBack={() => setSelectedProduct(null)}
+    onAddToCart={(p) => { addToCart(p); setSelectedProduct(null); }}
+  />
+)}
+{activeView === 'shop' && !selectedProduct && <CartView />}
       {activeView === 'orders' && <MyOrdersView />}
 {activeView === 'add-product' && <AddProductView />}
 {activeView === 'my-products' && <MyProductsView />}
