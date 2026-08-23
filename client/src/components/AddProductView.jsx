@@ -48,10 +48,18 @@ export default function AddProductView() {
   };
 
   const handleSubmit = async () => {
-    if (!name || !price) {
-      setMessage('Name and price are required');
-      return;
-    }
+  if (!name || !price) {
+    setMessage('Name and price are required');
+    return;
+  }
+  if (parseFloat(price) <= 0) {
+    setMessage('Price must be greater than 0');
+    return;
+  }
+  if (stock && parseInt(stock) < 0) {
+    setMessage('Stock cannot be negative');
+    return;
+  }
     setSubmitting(true);
     setMessage(null);
     try {
