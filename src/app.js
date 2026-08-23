@@ -13,6 +13,7 @@ const airtelRoutes = require('./routes/airtelRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const sellerRequestRoutes = require('./routes/sellerRequestRoutes');
 
 const app = express();
 app.use(helmet());
@@ -29,6 +30,8 @@ app.use('/api/airtel', airtelRoutes);
 app.use('/api/deliveries', deliveryRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/seller-requests', sellerRequestRoutes);
+
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/db-test', async (req, res) => {
   try {
