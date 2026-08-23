@@ -145,16 +145,18 @@ This service is deployed live on Render as a cloud Web Service, with a managed P
 
    ```bash
    NODE_ENV=production
-  Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
-  ​Ensure Cloudinary credentials are set for product image uploads.
-```
+   ```
+   Ensure MPESA_CALLBACK_URL points to your live, SSL-secured domain.
+   Ensure Cloudinary credentials are set for product image uploads.
+
 
 3. **Server Management**
-Run a process manager like PM2 to keep the API server alive:
-```bash
-npm install -g pm2
-pm2 start src/server.js --name "ecommerce-api"
-```
+   Run a process manager like PM2 to keep the API server alive:
+
+   ```bash
+   npm install -g pm2
+   pm2 start src/server.js --name "ecommerce-api"
+   ```
 
 
 ## License
