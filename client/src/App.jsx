@@ -95,7 +95,11 @@ const filteredProducts = products.filter((p) => {
 </div>
 
 {filteredProducts.length === 0 && !loading && (
-  <p style={{ textAlign: 'center', color: '#888', padding: '20px' }}>No products match your search.</p>
+  <div style={{ textAlign: 'center', padding: '30px 15px', border: '2px dashed var(--color-ink)', borderRadius: '8px' }}>
+    <p style={{ fontSize: '32px', margin: '0 0 10px 0' }}>🔍</p>
+    <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>No matches found</p>
+    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Try a different search term or category.</p>
+  </div>
 )}
 
 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>

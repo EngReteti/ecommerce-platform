@@ -95,8 +95,12 @@ export default function MyProductsView() {
       {message && <p style={{ fontWeight: 'bold', color: message.includes('deleted') || message.includes('updated') ? 'var(--color-green)' : 'var(--color-red)' }}>{message}</p>}
 
       {products.length === 0 ? (
-        <p style={{ color: '#666' }}>You haven't listed any products yet.</p>
-      ) : (
+  <div style={{ textAlign: 'center', padding: '30px 15px', border: '2px dashed var(--color-ink)', borderRadius: '8px', marginTop: '15px' }}>
+    <p style={{ fontSize: '32px', margin: '0 0 10px 0' }}>🛍️</p>
+    <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>Nothing here yet</p>
+    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Head to the "Sell" tab to list your first product!</p>
+  </div>
+) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
           {products.map((product) => {
             const isLowStock = product.stock < LOW_STOCK_THRESHOLD;

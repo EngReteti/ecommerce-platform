@@ -84,8 +84,12 @@ export default function MyOrdersView() {
         )}
       </div>
       {orders.length === 0 ? (
-        <p style={{ color: '#666' }}>You haven't placed any orders yet.</p>
-      ) : (
+  <div style={{ textAlign: 'center', padding: '30px 15px', border: '2px dashed var(--color-ink)', borderRadius: '8px', marginTop: '15px' }}>
+    <p style={{ fontSize: '32px', margin: '0 0 10px 0' }}>📦</p>
+    <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>No orders yet</p>
+    <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Once you buy something, it'll show up here!</p>
+  </div>
+) : (
         orders.map((order) => {
           const delivery = deliveries[order.id];
           return (
