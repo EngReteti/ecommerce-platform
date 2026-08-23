@@ -7,6 +7,7 @@ import MyOrdersView from './components/MyOrdersView';
 import AddProductView from './components/AddProductView';
 import MyProductsView from './components/MyProductsView';
 import ProductDetailView from './components/ProductDetailView';
+import AnalyticsView from './components/AnalyticsView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -155,6 +156,14 @@ const filteredProducts = products.filter((p) => {
   My Products
 </button>
 
+<button
+  onClick={() => setActiveView('analytics')}
+  className="btn"
+  style={{ flex: 1, background: activeView === 'analytics' ? 'var(--color-marigold)' : '#fff' }}
+>
+  Dashboard
+</button>
+
       {activeView === 'shop' && selectedProduct && (
   <ProductDetailView
     product={selectedProduct}
@@ -166,6 +175,7 @@ const filteredProducts = products.filter((p) => {
       {activeView === 'orders' && <MyOrdersView />}
 {activeView === 'add-product' && <AddProductView />}
 {activeView === 'my-products' && <MyProductsView />}
+{activeView === 'analytics' && <AnalyticsView />}
     </div>
   );
 }
