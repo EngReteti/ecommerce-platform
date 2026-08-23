@@ -2,7 +2,8 @@
 
 A full-featured e-commerce marketplace, designed to help people list products, purchase items, manage orders, process payments, and track deliveries — with built-in impact features for sellers.
 
-**Live demo:** https://ecommerce-platform-09ag.onrender.com
+**Live demo:** https://ecommerce-platform-red.vercel.app  
+**Live API:** https://ecommerce-platform-09ag.onrender.com
 
 ## Features
 
