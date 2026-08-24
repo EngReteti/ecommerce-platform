@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import BecomeSellerView from './BecomeSellerView';
 
 export default function LoginView({ onLoginSuccess }) {
   const [isRegistering, setIsRegistering] = useState(false);
+  const [showSellerForm, setShowSellerForm] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,6 +48,9 @@ export default function LoginView({ onLoginSuccess }) {
     }
   };
 
+if (showSellerForm) {
+    return <BecomeSellerView onBack={() => setShowSellerForm(false)} />;
+  }
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <div className="card" style={{ maxWidth: '400px', width: '100%', padding: '30px' }}>
@@ -104,7 +109,12 @@ export default function LoginView({ onLoginSuccess }) {
             {loading ? 'Please wait...' : (isRegistering ? 'Register' : 'Login')}
           </button>
         </form>
-        <p style={{ marginTop: '20px', textAlign: 'center' }}>
+       <p style={{ marginTop: '15px', textAlign: 'center', fontSize: '13px' }}>
+          <button type="button" onClick={() => setShowSellerForm(true)} style={{ background: 'none', border: 'none', color: 'var(--color-marigold)', cursor: 'pointer', textDecoration: 'underline', fontWeight: 'bold' }}>
+            Interested in selling? Apply here
+          </button>
+        </p>
+     <p style={{ marginTop: '20px', textAlign: 'center' }}>
           {isRegistering ? 'Already have an account? ' : "Don't have an account? "}
           <button
             type="button"
