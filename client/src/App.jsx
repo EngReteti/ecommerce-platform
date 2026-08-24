@@ -8,10 +8,21 @@ import AddProductView from './components/AddProductView';
 import MyProductsView from './components/MyProductsView';
 import ProductDetailView from './components/ProductDetailView';
 import AnalyticsView from './components/AnalyticsView';
+import AdminView from './components/AdminView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [activeView, setActiveView] = useState('shop');
+  const getRoleFromToken = (t) => {
+  if (!t) return null;
+  try {
+    const payload = JSON.parse(atob(t.split('.')[1]));
+    return payload.role;
+  } catch (e) {
+    return null;
+  }
+};
+const [userRole, setUserRole] = useState(getRoleFromToken(localStorage.getItem('token')));
+const [activeView, setActiveView] = useState('shop');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,7 +64,11 @@ const filteredProducts = products.filter((p) => {
   };
 
   if (!token) {
-    return <LoginView onLoginSuccess={() => setToken(localStorage.getItem('token'))} />;
+    return <LoginView onLoginSuccess={() => {
+  const newToken = localStorage.getItem('token');
+  setToken(newToken);
+  setUserRole(getRoleFromToken(newToken));
+}} />;
   }
 
   return (
@@ -167,6 +182,15 @@ const filteredProducts = products.filter((p) => {
 >
   Dashboard
 </button>
+{userRole === 'admin' && (
+  <button
+    onClick={() => setActiveView('admin')}
+    className="btn"
+    style={{ flex: 1, background: activeView === 'admin' ? 'var(--color-marigold)' : '#fff' }}
+  >
+    Admin
+  </button>
+)}
 
       {activeView === 'shop' && selectedProduct && (
   <ProductDetailView
@@ -180,6 +204,7 @@ const filteredProducts = products.filter((p) => {
 {activeView === 'add-product' && <AddProductView />}
 {activeView === 'my-products' && <MyProductsView />}
 {activeView === 'analytics' && <AnalyticsView />}
+{activeView === 'admin' && userRole === 'admin' && <AdminView />}
     </div>
   );
 }
