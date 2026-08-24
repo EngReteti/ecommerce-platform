@@ -14,4 +14,19 @@ const findUserByEmail = async (email) => {
   return result.rows[0];
 };
 
-module.exports = { createUser, findUserByEmail };
+const getAllUsers = async () => {
+  const result = await pool.query(
+    'SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC'
+  );
+  return result.rows;
+};
+
+const setUserRole = async (id, role) => {
+  const result = await pool.query(
+    'UPDATE users SET role = $1 WHERE id = $2 RETURNING id, name, email, role',
+    [role, id]
+  );
+  return result.rows[0];
+};
+
+module.exports = { createUser, findUserByEmail, getAllUsers, setUserRole };
