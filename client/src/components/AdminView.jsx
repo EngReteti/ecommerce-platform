@@ -3,11 +3,22 @@ import API_BASE_URL from '../config';
 
 export default function AdminView() {
   const [requests, setRequests] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionMessage, setActionMessage] = useState(null);
 
-  const fetchRequests = () => {
+  const fetchUsers = () => {
+    const token = localStorage.getItem('token');
+    fetch(`${API_BASE_URL}/api/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setUsers(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  };
+
+const fetchRequests = () => {
     const token = localStorage.getItem('token');
     setLoading(true);
     fetch(`${API_BASE_URL}/api/seller-requests/pending`, {
@@ -29,9 +40,27 @@ export default function AdminView() {
 
   useEffect(() => {
     fetchRequests();
+    fetchUsers();
   }, []);
 
-  const handleAction = async (id, action, name) => {
+  const handleDemote = async (id, name) => {
+    if (!window.confirm(`Demote ${name} back to buyer? Their products and account stay intact, but they lose seller access.`)) return;
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${id}/demote`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to demote user');
+      setActionMessage(data.message);
+      fetchUsers();
+    } catch (err) {
+      setActionMessage(err.message);
+    }
+  };
+
+    const handleAction = async (id, action, name) => {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`${API_BASE_URL}/api/seller-requests/${id}/${action}`, {
@@ -84,6 +113,35 @@ export default function AdminView() {
           ))}
         </div>
       )}
+
+      <h2 style={{ marginTop: '30px' }}>All Users</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '15px' }}>
+        {users.map((u) => (
+          <div key={u.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #ddd', borderRadius: '6px', padding: '10px 15px', background: '#fff' }}>
+            <div>
+              <strong>{u.name}</strong>
+              <p style={{ margin: '2px 0', fontSize: '13px', color: '#666' }}>{u.email}</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{
+                fontWeight: 'bold',
+                fontSize: '12px',
+                padding: '3px 10px',
+                borderRadius: '20px',
+                color: '#fff',
+                background: u.role === 'admin' ? '#333' : u.role === 'seller' ? 'var(--color-marigold)' : 'var(--color-green)'
+              }}>
+                {u.role.toUpperCase()}
+              </span>
+              {u.role === 'seller' && (
+                <button onClick={() => handleDemote(u.id, u.name)} className="btn" style={{ padding: '4px 10px', fontSize: '12px', background: 'var(--color-red)', color: '#fff' }}>
+                  Demote
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
