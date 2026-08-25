@@ -205,6 +205,14 @@ const filteredProducts = products.filter((p) => {
 {activeView === 'my-products' && <MyProductsView />}
 {activeView === 'analytics' && <AnalyticsView />}
 {activeView === 'admin' && userRole === 'admin' && <AdminView />}
+
+      <footer style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px solid var(--color-ink)', textAlign: 'center', fontSize: '13px', color: '#888' }}>
+        <p style={{ margin: '0 0 4px 0' }}>Built by Lerionka — CS student, Cooperative University of Kenya</p>
+        <p style={{ margin: 0 }}>
+          Questions or feedback? <a href="mailto:lerionkareteti@gmail.com" style={{ color: 'var(--color-green)', fontWeight: 'bold' }}>lerionkareteti@gmail.com</a>
+        </p>
+      </footer>
     </div>
   );
 }
+
