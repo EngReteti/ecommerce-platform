@@ -159,29 +159,32 @@ const filteredProducts = products.filter((p) => {
           My Orders
         </button>
       </div>
-<button
-  onClick={() => setActiveView('add-product')}
-  className="btn"
-  style={{ flex: 1, background: activeView === 'add-product' ? 'var(--color-marigold)' : '#fff' }}
->
-  Sell
-</button>
 
-<button
-  onClick={() => setActiveView('my-products')}
-  className="btn"
-  style={{ flex: 1, background: activeView === 'my-products' ? 'var(--color-marigold)' : '#fff' }}
->
-  My Products
-</button>
-
-<button
-  onClick={() => setActiveView('analytics')}
-  className="btn"
-  style={{ flex: 1, background: activeView === 'analytics' ? 'var(--color-marigold)' : '#fff' }}
->
-  Dashboard
-</button>
+      {(userRole === 'seller' || userRole === 'admin') && (
+  <>
+    <button
+      onClick={() => setActiveView('add-product')}
+      className="btn"
+      style={{ flex: 1, background: activeView === 'add-product' ? 'var(--color-marigold)' : '#fff' }}
+    >
+      Sell
+    </button>
+    <button
+      onClick={() => setActiveView('my-products')}
+      className="btn"
+      style={{ flex: 1, background: activeView === 'my-products' ? 'var(--color-marigold)' : '#fff' }}
+    >
+      My Products
+    </button>
+    <button
+      onClick={() => setActiveView('analytics')}
+      className="btn"
+      style={{ flex: 1, background: activeView === 'analytics' ? 'var(--color-marigold)' : '#fff' }}
+    >
+      Dashboard
+    </button>
+  </>
+)}
 {userRole === 'admin' && (
   <button
     onClick={() => setActiveView('admin')}

@@ -20,13 +20,26 @@ export default function AnalyticsView() {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    if (err.message && err.message.includes('Only sellers')) {
+      setError('This page is for sellers only. If you\'d like to sell on our platform, apply from the login screen!');
+    } else {
+      setError(err.message);
+    }
+    setLoading(false);
+  });
   }, []);
 
   if (loading) return <p style={{ padding: '20px' }}>Loading your dashboard...</p>;
-  if (error) return <p style={{ padding: '20px', color: 'var(--color-red)' }}>Error: {error}</p>;
+  if (error) {
+    const isPermissionIssue = error.includes('sellers only');
+    return (
+      <div style={{ textAlign: 'center', padding: '30px 15px', border: '2px dashed var(--color-ink)', borderRadius: '8px', margin: '15px' }}>
+        <p style={{ fontSize: '32px', margin: '0 0 10px 0' }}>{isPermissionIssue ? '🔒' : '⚠️'}</p>
+        <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>{isPermissionIssue ? 'Sellers Only' : 'Something went wrong'}</p>
+        <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>{error}</p>
+      </div>
+    );
+  }
   if (!data) return null;
 
   const { summary, topProducts, recentOrders, lowStockCount } = data;
