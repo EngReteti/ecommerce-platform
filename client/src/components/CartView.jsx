@@ -69,8 +69,11 @@ export default function CartView() {
 
     try {
       const phoneInput = document.getElementById('mpesa-phone-input');
-      const phoneValue = phoneInput ? phoneInput.value.trim() : '0758791006';
+      const phoneValue = phoneInput ? phoneInput.value.trim() : '';
       if (!phoneValue) throw new Error('Phone number is required');
+      if (!/^0[17]\d{8}$/.test(phoneValue)) {
+        throw new Error('Enter a valid 10-digit M-Pesa number (e.g. 0712345678)');
+      }
 
       const { orderId, token } = await createOrder();
 
@@ -191,7 +194,7 @@ export default function CartView() {
 
         <div style={{ marginTop: '15px' }}>
           <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Delivery Address:</label>
-          <input id="delivery-address-input" type="text" defaultValue="Karen, Nairobi, Kenya" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
+          <input id="delivery-address-input" type="text" placeholder="Enter your delivery address" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
         </div>
 
         <div style={{ marginTop: '15px' }}>
@@ -217,7 +220,7 @@ export default function CartView() {
         {paymentMethod === 'mpesa' && (
           <div style={{ marginTop: '15px' }}>
             <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>M-Pesa Phone Number:</label>
-            <input id="mpesa-phone-input" type="text" defaultValue="0758791006" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
+            <input id="mpesa-phone-input" type="tel" placeholder="e.g. 0712345678" maxLength="10" style={{ width: '100%', padding: '10px', color: '#000', background: '#fff', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
           </div>
         )}
 
