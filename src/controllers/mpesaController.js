@@ -28,6 +28,13 @@ const initiateMpesaPayment = async (req, res) => {
       return res.status(400).json({ error: 'Phone number is required' });
     }
 
+    let formattedPhone = phoneNumber.trim();
+    if (formattedPhone.startsWith('0')) {
+      formattedPhone = '254' + formattedPhone.slice(1);
+    } else if (formattedPhone.startsWith('+254')) {
+      formattedPhone = formattedPhone.slice(1);
+    }
+
     let order = await getOrderById(orderId, req.user ? req.user.id : null);
   if (!order) { order = { id: orderId || 1, total_amount: 49.99, status: 'pending' }; }
 
@@ -54,9 +61,9 @@ const initiateMpesaPayment = async (req, res) => {
         Timestamp: timestamp,
         TransactionType: 'CustomerPayBillOnline',
         Amount: Math.round(order.total_amount),
-        PartyA: phoneNumber,
+        PartyA: formattedPhone,
         PartyB: SHORTCODE,
-        PhoneNumber: phoneNumber,
+        PhoneNumber: formattedPhone,
         CallBackURL: CALLBACK_URL,
         AccountReference: `Order${order.id}`,
         TransactionDesc: `Payment for order ${order.id}`,
