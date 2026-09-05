@@ -6,11 +6,13 @@ const {
   deleteProduct,
   getLowStockProducts,
   getProductsBySeller,
+  addProductImage
 } = require('../models/productModel');
 
 const addProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category, imageUrl } = req.body;
+    const { name, description, price, stock, category, images } = req.body;
+    const image_url = req.body.image_url || req.body.imageUrl || (Array.isArray(images) && images[0]);
 
     if (!name || !price) {
       return res.status(400).json({ error: 'Name and price are required' });
@@ -33,8 +35,14 @@ const addProduct = async (req, res) => {
       numericPrice,
       numericStock,
       category,
-      imageUrl
+      image_url
     );
+
+    if (Array.isArray(images) && images.length > 0) {
+      for (let i = 0; i < images.length; i++) {
+        await addProductImage(product.id, images[i], i);
+      }
+    }
 
     res.status(201).json({ message: 'Product created successfully', product });
   } catch (err) {

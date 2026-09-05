@@ -18,16 +18,17 @@ router.get('/low-stock', protect, sellerOnly, lowStockAlerts);
 router.get('/my-products', protect, sellerOnly, myProducts);
 router.get('/:id', getProduct);
 
-router.post('/upload-image', protect, sellerOnly, (req, res) => {
-  upload.single('image')(req, res, (err) => {
+router.post('/upload-images', protect, sellerOnly, (req, res) => {
+  upload.array('images', 5)(req, res, (err) => {
     if (err) {
-      console.error('UPLOAD ERROR:', err.message);
+      console.error('UPLOAD ERROR:', err);
       return res.status(500).json({ error: err.message });
     }
-    if (!req.file) {
-      return res.status(400).json({ error: 'No image file provided' });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No image files provided' });
     }
-    res.status(200).json({ imageUrl: req.file.path });
+    const imageUrls = req.files.map((file) => file.path);
+    res.status(200).json({ imageUrls });
   });
 });
 
