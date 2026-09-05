@@ -7,39 +7,46 @@ export default function AddProductView() {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [category, setCategory] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
 
   const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-    setImageUrl(null);
+    const files = Array.from(e.target.files).slice(0, 5);
+    if (files.length === 0) return;
+    setImageFiles(files);
+    setImagePreviews(files.map((f) => URL.createObjectURL(f)));
+    setImageUrls([]);
+  };
+
+  const handleRemovePhoto = (i) => {
+    setImageFiles((prev) => prev.filter((_, idx) => idx !== i));
+    setImagePreviews((prev) => prev.filter((_, idx) => idx !== i));
+    setImageUrls([]);
   };
 
   const handleImageUpload = async () => {
-    if (!imageFile) return;
+    if (imageFiles.length === 0) return;
     setUploading(true);
     setMessage(null);
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
-      formData.append('image', imageFile);
+      imageFiles.forEach((file) => formData.append('images', file));
 
-      const res = await fetch(`${API_BASE_URL}/api/products/upload-image`, {
+      const res = await fetch(`${API_BASE_URL}/api/products/upload-images`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Image upload failed');
-      setImageUrl(data.imageUrl);
-      setMessage('Image uploaded!');
+      setImageUrls(data.imageUrls);
+      setMessage(`${data.imageUrls.length} photo(s) uploaded!`);
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -48,18 +55,21 @@ export default function AddProductView() {
   };
 
   const handleSubmit = async () => {
-  if (!name || !price) {
-    setMessage('Name and price are required');
-    return;
-  }
-  if (parseFloat(price) <= 0) {
-    setMessage('Price must be greater than 0');
-    return;
-  }
-  if (stock && parseInt(stock) < 0) {
-    setMessage('Stock cannot be negative');
-    return;
-  }
+    if (!name || !price) {
+      setMessage('Name and price are required');
+      return;
+    }
+
+    if (parseFloat(price) <= 0) {
+      setMessage('Price must be greater than 0');
+      return;
+    }
+
+    if (stock && parseInt(stock) < 0) {
+      setMessage('Stock cannot be negative');
+      return;
+    }
+
     setSubmitting(true);
     setMessage(null);
     try {
@@ -68,7 +78,7 @@ export default function AddProductView() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           name,
@@ -76,9 +86,10 @@ export default function AddProductView() {
           price: parseFloat(price),
           stock: parseInt(stock) || 0,
           category,
-          imageUrl,
+          images: imageUrls,
         }),
       });
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to create product');
 
@@ -88,9 +99,9 @@ export default function AddProductView() {
       setPrice('');
       setStock('');
       setCategory('');
-      setImageFile(null);
-      setImagePreview(null);
-      setImageUrl(null);
+      setImageFiles([]);
+      setImagePreviews([]);
+      setImageUrls([]);
     } catch (err) {
       setMessage(err.message);
     } finally {
@@ -103,44 +114,59 @@ export default function AddProductView() {
       <h2>Add New Product</h2>
 
       <div style={{ marginTop: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Product Photo:</label>
-        <input type="file" accept="image/*" onChange={handleFileSelect} style={{ marginBottom: '10px' }} />
-        {imagePreview && (
+        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Product Photos (up to 5)</label>
+        <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>Tip: in your gallery, look for "Select multiple" or long-press a photo to select several at once.</p>
+        <input type="file" accept="image/*" multiple onChange={handleFileSelect} style={{ marginBottom: '10px' }} />
+        {imageFiles.length > 0 && (
+          <p style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--color-green)' }}>{imageFiles.length} photo{imageFiles.length !== 1 ? 's' : ''} selected</p>
+        )}
+        {imagePreviews.length > 0 && (
           <div style={{ marginTop: '10px' }}>
-            <img src={imagePreview} alt="preview" style={{ width: '150px', height: '150px', objectFit: 'cover', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
-            {!imageUrl && (
-              <button onClick={handleImageUpload} disabled={uploading} className="btn" style={{ display: 'block', marginTop: '10px', background: 'var(--color-green)', color: '#fff' }}>
-                {uploading ? 'Uploading...' : 'Upload Photo'}
-              </button>
-            )}
-            {imageUrl && <p style={{ color: 'var(--color-green)', fontWeight: 'bold', marginTop: '5px' }}>✓ Photo ready</p>}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {imagePreviews.map((src, i) => (
+                <div key={i} style={{ position: 'relative' }}>
+                  <img src={src} alt={`preview ${i}`} style={{ width: '80px', height: '80px', objectFit: 'cover', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePhoto(i)}
+                    style={{ position: 'absolute', top: '-6px', right: '-6px', width: '22px', height: '22px', borderRadius: '50%', background: 'var(--color-red)', color: '#fff', border: '2px solid #fff', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', lineHeight: '1' }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            {imageUrls.length > 0 && <p style={{ color: 'var(--color-green)', fontWeight: 'bold', marginTop: '5px' }}>Photos ready</p>}
+            <button onClick={handleImageUpload} disabled={uploading} className="btn" style={{ display: 'block', marginTop: '10px', background: 'var(--color-green)', color: '#fff' }}>
+              {uploading ? 'Uploading...' : 'Upload Photos'}
+            </button>
           </div>
         )}
       </div>
 
       <div style={{ marginTop: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Product Name:</label>
+        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Product Name</label>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={{ width: '100%', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
       </div>
 
       <div style={{ marginTop: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Description:</label>
+        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Description</label>
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} style={{ width: '100%', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px', minHeight: '80px' }} />
       </div>
 
       <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
         <div style={{ flex: 1 }}>
-          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Price (KES):</label>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Price (KES)</label>
           <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} style={{ width: '100%', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
         </div>
         <div style={{ flex: 1 }}>
-          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Stock:</label>
+          <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Stock</label>
           <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} style={{ width: '100%', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
         </div>
       </div>
 
       <div style={{ marginTop: '15px' }}>
-        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Category:</label>
+        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Category</label>
         <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', padding: '10px', border: '2px solid var(--color-ink)', borderRadius: '6px' }} />
       </div>
 
