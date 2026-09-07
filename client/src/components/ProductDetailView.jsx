@@ -3,6 +3,10 @@ import API_BASE_URL from '../config';
 
 export default function ProductDetailView({ product, onBack, onAddToCart }) {
   const [summary, setSummary] = useState(null);
+  const galleryImages = (Array.isArray(product.images) && product.images.length > 0)
+    ? product.images
+    : (product.image_url ? [product.image_url] : []);
+  const [activeImage, setActiveImage] = useState(galleryImages[0] || null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState(5);
@@ -64,9 +68,25 @@ export default function ProductDetailView({ product, onBack, onAddToCart }) {
       </button>
 
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-        {product.image_url && (
-          <img src={product.image_url} alt={product.name} style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '8px', border: '2px solid var(--color-ink)' }} />
+        {activeImage && (
+          <div>
+            <img src={activeImage} alt={product.name} style={{ width: '200px', height: '200px', objectFit: 'cover', borderRadius: '8px', border: '2px solid var(--color-ink)' }} />
+            {galleryImages.length > 1 && (
+              <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
+                {galleryImages.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img}
+                    alt={`${product.name} ${i}`}
+                    onClick={() => setActiveImage(img)}
+                    style={{ width: '45px', height: '45px', objectFit: 'cover', borderRadius: '4px', border: activeImage === img ? '2px solid var(--color-marigold)' : '2px solid #ccc', cursor: 'pointer' }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         )}
+        
         <div style={{ flex: 1, minWidth: '200px' }}>
           <h2 style={{ marginBottom: '8px' }}>{product.name}</h2>
           <p style={{ color: '#555' }}>{product.description}</p>
