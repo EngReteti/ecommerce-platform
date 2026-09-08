@@ -15,6 +15,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const sellerRequestRoutes = require('./routes/sellerRequestRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const wishlistRoutes = require('./routes/wishlistRoutes');
 
 const app = express();
 app.use(helmet());
@@ -33,6 +34,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/seller-requests', sellerRequestRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/db-test', async (req, res) => {

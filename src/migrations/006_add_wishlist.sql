@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS wishlist (
+  id SERIAL PRIMARY KEY,
+  buyer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(buyer_id, product_id)
+);
