@@ -9,6 +9,7 @@ import MyProductsView from './components/MyProductsView';
 import ProductDetailView from './components/ProductDetailView';
 import AnalyticsView from './components/AnalyticsView';
 import AdminView from './components/AdminView';
+import WishlistView from './components/WishlistView';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -23,16 +24,49 @@ export default function App() {
 };
 const [userRole, setUserRole] = useState(getRoleFromToken(localStorage.getItem('token')));
 const [activeView, setActiveView] = useState('shop');
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const { cart, addToCart } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+const [wishlistIds, setWishlistIds] = useState([]);
 
-  useEffect(() => {
+const fetchWishlistIds = () => {
+  const t = localStorage.getItem('token');
+  if (!t) return;
+  fetch('https://ecommerce-platform-09ag.onrender.com/api/wishlist', {
+    headers: { Authorization: `Bearer ${t}` },
+  })
+    .then((res) => res.json())
+    .then((data) => setWishlistIds(Array.isArray(data) ? data.map((p) => p.id) : []))
+    .catch(() => {});
+};
+
+const toggleWishlist = async (productId) => {
+  const t = localStorage.getItem('token');
+  const isSaved = wishlistIds.includes(productId);
+  try {
+    if (isSaved) {
+      await fetch(`https://ecommerce-platform-09ag.onrender.com/api/wishlist/${productId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${t}` },
+      });
+    } else {
+      await fetch('https://ecommerce-platform-09ag.onrender.com/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` },
+        body: JSON.stringify({ productId }),
+      });
+    }
+    fetchWishlistIds();
+  } catch (err) {
+    // silent fail
+  }
+};
+
+useEffect(() => {
     if (token) {
       fetch('https://ecommerce-platform-09ag.onrender.com/api/products')
         .then((res) => {
@@ -49,6 +83,9 @@ const [activeView, setActiveView] = useState('shop');
         });
     }
   }, [token]);
+useEffect(() => {
+  fetchWishlistIds();
+}, [token]);
 
 const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
 
@@ -135,9 +172,18 @@ const filteredProducts = products.filter((p) => {
               <p style={{ fontWeight: 'bold', margin: '10px 0', fontSize: '20px', color: 'var(--color-green)' }}>
                 KES {product.price}
               </p>
-              <button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="btn btn-primary" style={{ width: '100%' }}>
-                Add to Cart
-              </button>
+              <div style={{ display: 'flex', gap: '6px' }}>
+  <button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="btn btn-primary" style={{ flex: 1 }}>
+    Add to Cart
+  </button>
+  <button
+    onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+    className="btn"
+    style={{ background: wishlistIds.includes(product.id) ? 'var(--color-red)' : '#fff', color: wishlistIds.includes(product.id) ? '#fff' : 'var(--color-ink)', padding: '0 14px', fontSize: '18px' }}
+  >
+    {wishlistIds.includes(product.id) ? '♥' : '♡'}
+  </button>
+</div>
             </div>
           </div>
         ))}
@@ -151,6 +197,13 @@ const filteredProducts = products.filter((p) => {
         >
           Shop
         </button>
+<button
+  onClick={() => setActiveView('wishlist')}
+  className="btn"
+  style={{ flex: 1, background: activeView === 'wishlist' ? 'var(--color-marigold)' : '#fff' }}
+>
+  Wishlist
+</button>
         <button
           onClick={() => setActiveView('orders')}
           className="btn"
@@ -208,6 +261,7 @@ const filteredProducts = products.filter((p) => {
 {activeView === 'my-products' && <MyProductsView />}
 {activeView === 'analytics' && <AnalyticsView />}
 {activeView === 'admin' && userRole === 'admin' && <AdminView />}
+{activeView === 'wishlist' && <WishlistView onAddToCart={addToCart} />}
 
       <footer style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px solid var(--color-ink)', textAlign: 'center', fontSize: '13px', color: '#888' }}>
         <p style={{ margin: '0 0 4px 0' }}>Built by Lerionka — CS student, Cooperative University of Kenya</p>
