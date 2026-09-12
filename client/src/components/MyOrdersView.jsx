@@ -3,6 +3,8 @@ import API_BASE_URL from '../config';
 
 export default function MyOrdersView() {
   const [orders, setOrders] = useState([]);
+  const [cancellingId, setCancellingId] = useState(null);
+  const [actionMessage, setActionMessage] = useState(null);
   const [deliveries, setDeliveries] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,7 +47,28 @@ export default function MyOrdersView() {
     }
   }, []);
 
-  useEffect(() => {
+  const handleCancel = async (orderId) => {
+    if (!window.confirm('Cancel this order? This cannot be undone.')) return;
+    setCancellingId(orderId);
+    setActionMessage(null);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/orders/${orderId}/cancel`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to cancel order');
+      setActionMessage(`Order #${orderId} cancelled.`);
+      fetchOrders();
+    } catch (err) {
+      setActionMessage(err.message);
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+useEffect(() => {
     fetchOrders();
     const interval = setInterval(fetchOrders, 30000);
     return () => clearInterval(interval);
@@ -83,7 +106,10 @@ export default function MyOrdersView() {
           <span style={{ fontSize: '12px', color: '#999' }}>Updated {formatTime(lastUpdated)}</span>
         )}
       </div>
-      {orders.length === 0 ? (
+      {actionMessage && (
+        <p style={{ fontWeight: 'bold', color: actionMessage.includes('cancelled.') ? 'var(--color-green)' : 'var(--color-red)', marginTop: '10px' }}>{actionMessage}</p>
+      )}
+{orders.length === 0 ? (
   <div style={{ textAlign: 'center', padding: '30px 15px', border: '2px dashed var(--color-ink)', borderRadius: '8px', marginTop: '15px' }}>
     <p style={{ fontSize: '32px', margin: '0 0 10px 0' }}>📦</p>
     <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>No orders yet</p>
@@ -101,6 +127,17 @@ export default function MyOrdersView() {
                 </span>
               </div>
               <p style={{ margin: '8px 0px 4px' }}>Total: KSh {order.total_amount}</p>
+              
+           {order.status === 'pending' && (
+                <button
+                  onClick={() => handleCancel(order.id)}
+                  disabled={cancellingId === order.id}
+                  className="btn"
+                  style={{ background: 'var(--color-red)', color: '#fff', fontSize: '12px', padding: '5px 12px', marginBottom: '10px' }}
+                >
+                  {cancellingId === order.id ? 'Cancelling...' : 'Cancel Order'}
+                </button>
+              )}
 
               {delivery ? (
                 <div style={{ marginTop: '10px', padding: '10px', background: '#F0F8FF', borderRadius: '6px', border: '1px solid #ddd' }}>
