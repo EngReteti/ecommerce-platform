@@ -1,4 +1,4 @@
-const { createOrderFromCart, getOrdersByBuyer, getOrderById } = require('../models/orderModel');
+const { createOrderFromCart, getOrdersByBuyer, getOrderByid, cancelOrder } = require('../models/orderModel');
 
 const checkout = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ const orderDetails = async (req, res) => {
         id: req.params.id || 1,
         total_amount: 49.99,
         status: 'pending',
-        items: []
+        items: [],
       };
     }
     res.json(order);
@@ -41,4 +41,16 @@ const orderDetails = async (req, res) => {
   }
 };
 
-module.exports = { checkout, myOrders, orderDetails };
+const cancelMyOrder = async (req, res) => {
+  try {
+    const cancelled = await cancelOrder(req.params.id, req.user.id);
+    if (!cancelled) {
+      return res.status(400).json({ error: 'Order cannot be cancelled (not found, not yours, or already processed)' });
+    }
+    res.json({ message: 'Order cancelled successfully', order: cancelled });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+module.exports = { checkout, myOrders, orderDetails, cancelMyOrder };

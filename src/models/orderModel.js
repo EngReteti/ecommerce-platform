@@ -87,6 +87,48 @@ const getOrderById = async (orderId, buyerId) => {
   return { ...orderResult.rows[0], items: itemsResult.rows };
 };
 
+const cancelOrder = async (orderId, buyerId) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const orderResult = await client.query(
+      `SELECT * FROM orders WHERE id = $1 AND buyer_id = $2 AND status = 'pending'`,
+      [orderId, buyerId]
+    );
+
+    if (orderResult.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return null;
+    }
+
+    const itemsResult = await client.query(
+      `SELECT product_id, quantity FROM order_items WHERE order_id = $1`,
+      [orderId]
+    );
+
+    for (const item of itemsResult.rows) {
+      await client.query(
+        `UPDATE products SET stock = stock + $1 WHERE id = $2`,
+        [item.quantity, item.product_id]
+      );
+    }
+
+    const updateResult = await client.query(
+      `UPDATE orders SET status = 'cancelled' WHERE id = $1 RETURNING *`,
+      [orderId]
+    );
+
+    await client.query('COMMIT');
+    return updateResult.rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
 const getSellerSalesSummary = async (sellerId) => {
   const result = await pool.query(
     `SELECT COUNT(DISTINCT orders.id) AS total_orders,
@@ -131,4 +173,4 @@ const getSellerRecentOrders = async (sellerId, limit = 10) => {
   return result.rows;
 };
 
-module.exports = { createOrderFromCart, getOrdersByBuyer, getOrderById, getSellerSalesSummary, getSellerTopProducts, getSellerRecentOrders };
+module.exports = { createOrderFromCart, getOrdersByBuyer, getOrderById, getSellerSalesSummary, getSellerTopProducts, getSellerRecentOrders, cancelOrder };
