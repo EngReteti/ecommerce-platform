@@ -10,6 +10,7 @@ import ProductDetailView from './components/ProductDetailView';
 import AnalyticsView from './components/AnalyticsView';
 import AdminView from './components/AdminView';
 import WishlistView from './components/WishlistView';
+import { Store, Heart, Package, ShoppingBag, Settings } from 'lucide-react';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -189,64 +190,38 @@ const filteredProducts = products.filter((p) => {
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', margin: '20px 0' }}>
-        <button
-          onClick={() => setActiveView('shop')}
-          className="btn"
-          style={{ flex: 1, background: activeView === 'shop' ? 'var(--color-marigold)' : '#fff' }}
-        >
-          Shop
-        </button>
-<button
-  onClick={() => setActiveView('wishlist')}
-  className="btn"
-  style={{ flex: 1, background: activeView === 'wishlist' ? 'var(--color-marigold)' : '#fff' }}
->
-  Wishlist
-</button>
-        <button
-          onClick={() => setActiveView('orders')}
-          className="btn"
-          style={{ flex: 1, background: activeView === 'orders' ? 'var(--color-marigold)' : '#fff' }}
-        >
-          My Orders
-        </button>
-      </div>
-
-      {(userRole === 'seller' || userRole === 'admin') && (
-  <>
-    <button
-      onClick={() => setActiveView('add-product')}
-      className="btn"
-      style={{ flex: 1, background: activeView === 'add-product' ? 'var(--color-marigold)' : '#fff' }}
-    >
-      Sell
-    </button>
-    <button
-      onClick={() => setActiveView('my-products')}
-      className="btn"
-      style={{ flex: 1, background: activeView === 'my-products' ? 'var(--color-marigold)' : '#fff' }}
-    >
-      My Products
-    </button>
-    <button
-      onClick={() => setActiveView('analytics')}
-      className="btn"
-      style={{ flex: 1, background: activeView === 'analytics' ? 'var(--color-marigold)' : '#fff' }}
-    >
-      Dashboard
-    </button>
-  </>
-)}
-{userRole === 'admin' && (
-  <button
-    onClick={() => setActiveView('admin')}
-    className="btn"
-    style={{ flex: 1, background: activeView === 'admin' ? 'var(--color-marigold)' : '#fff' }}
-  >
-    Admin
+      <div style={{
+  position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
+  display: 'flex', justifyContent: 'space-around', alignItems: 'center',
+  background: '#fff', borderTop: '3px solid var(--color-ink)',
+  boxShadow: '0 -2px 0px var(--color-ink)', padding: '8px 0'
+}}>
+  <button onClick={() => setActiveView('shop')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'shop' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
+    <Store size={20} />
+    <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Shop</span>
   </button>
-)}
+  <button onClick={() => setActiveView('wishlist')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'wishlist' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
+    <Heart size={20} />
+    <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Wishlist</span>
+  </button>
+  <button onClick={() => setActiveView('orders')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'orders' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
+    <Package size={20} />
+    <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Orders</span>
+  </button>
+  {(userRole === 'seller' || userRole === 'admin') && (
+    <button onClick={() => setActiveView('my-products')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: (activeView === 'my-products' || activeView === 'add-product' || activeView === 'analytics') ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
+      <ShoppingBag size={20} />
+      <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Seller</span>
+    </button>
+  )}
+  {userRole === 'admin' && (
+    <button onClick={() => setActiveView('admin')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'admin' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
+      <Settings size={20} />
+      <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Admin</span>
+    </button>
+  )}
+</div>
+<div style={{ height: '60px' }} />
 
       {activeView === 'shop' && selectedProduct && (
   <ProductDetailView
