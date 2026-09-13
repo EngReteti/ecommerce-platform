@@ -10,7 +10,7 @@ import ProductDetailView from './components/ProductDetailView';
 import AnalyticsView from './components/AnalyticsView';
 import AdminView from './components/AdminView';
 import WishlistView from './components/WishlistView';
-import { Store, Heart, Package, ShoppingBag, Settings } from 'lucide-react';
+import { Store, Heart, Package, ShoppingBag, Settings, PlusCircle, List, BarChart3 } from 'lucide-react';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -32,7 +32,8 @@ const [activeView, setActiveView] = useState('shop');
   const [error, setError] = useState(null);
   const { cart, addToCart } = useCart();
   const [selectedProduct, setSelectedProduct] = useState(null);
-const [wishlistIds, setWishlistIds] = useState([]);
+  const [wishlistIds, setWishlistIds] = useState([]);
+  const [showSellerMenu, setShowSellerMenu] = useState(false);
 
 const fetchWishlistIds = () => {
   const t = localStorage.getItem('token');
@@ -257,19 +258,45 @@ const filteredProducts = products.filter((p) => {
     <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Orders</span>
   </button>
   {(userRole === 'seller' || userRole === 'admin') && (
-    <button onClick={() => setActiveView('my-products')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: (activeView === 'my-products' || activeView === 'add-product' || activeView === 'analytics') ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
-      <ShoppingBag size={20} />
-      <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Seller</span>
-    </button>
-  )}
+      <button
+        onClick={() => setShowSellerMenu((prev) => !prev)}
+        style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: (activeView === 'my-products' || activeView === 'add-product' || activeView === 'analytics') ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}
+      >
+        <ShoppingBag size={20} />
+        <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Seller</span>
+      </button>
+    )}
+     
   {userRole === 'admin' && (
     <button onClick={() => setActiveView('admin')} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'admin' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer' }}>
       <Settings size={20} />
       <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>Admin</span>
     </button>
-  )}
-</div>
-<div style={{ height: '60px' }} />
+    )}
+    </div>
+
+    {showSellerMenu && (
+      <div style={{
+        position: 'fixed', bottom: '58px', left: '50%', transform: 'translateX(calc(-50% + 100px))',
+        zIndex: 1001, background: '#fff', border: '3px solid var(--color-ink)', borderRadius: '30px',
+        boxShadow: '3px 3px 0px var(--color-ink)', display: 'flex', gap: '4px', padding: '6px 10px'
+      }}>
+        <button onClick={() => { setActiveView('add-product'); setShowSellerMenu(false); }} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'add-product' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer', padding: '4px 8px' }}>
+          <PlusCircle size={18} />
+          <span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Sell</span>
+        </button>
+        <button onClick={() => { setActiveView('my-products'); setShowSellerMenu(false); }} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'my-products' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer', padding: '4px 8px' }}>
+          <List size={18} />
+          <span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Products</span>
+        </button>
+        <button onClick={() => { setActiveView('analytics'); setShowSellerMenu(false); }} style={{ background: 'none', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', color: activeView === 'analytics' ? 'var(--color-marigold)' : 'var(--color-ink)', cursor: 'pointer', padding: '4px 8px' }}>
+          <BarChart3 size={18} />
+          <span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>Stats</span>
+        </button>
+      </div>
+    )}
+
+    <div style={{ height: '60px' }} />
 
       {activeView === 'shop' && selectedProduct && (
   <ProductDetailView
