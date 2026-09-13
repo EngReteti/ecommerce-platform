@@ -56,7 +56,7 @@ export default function WishlistView({ onAddToCart }) {
           <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>Tap the heart on any product to save it here.</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '15px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 200px))', gap: '15px', marginTop: '15px' }}>
           {items.map((item) => (
             <div key={item.id} className="card" style={{ padding: '12px' }}>
               {item.image_url && (

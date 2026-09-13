@@ -90,6 +90,68 @@ useEffect(() => {
 
 const categories = ['all', ...new Set(products.map((p) => p.category).filter(Boolean))];
 
+const isBrowsing = !searchTerm && selectedCategory === 'all';
+
+const renderProductCard = (product) => {
+  const isSaved = wishlistIds.includes(product.id);
+  return (
+    <div
+      key={product.id}
+      className="card"
+      style={{ padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', overflow: 'hidden', position: 'relative' }}
+      onClick={() => setSelectedProduct(product)}
+    >
+      <button
+        onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+        style={{
+          position: 'absolute', top: '6px', right: '6px', background: 'rgba(255,255,255,0.85)',
+          border: 'none', borderRadius: '50%', width: '28px', height: '28px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', zIndex: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+        }}
+      >
+        <Heart size={16} color={isSaved ? 'var(--color-red)' : '#888'} fill={isSaved ? 'var(--color-red)' : 'none'} />
+      </button>
+
+      <div>
+        {product.image_url && (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '4px', marginBottom: '10px', border: '2px solid var(--color-ink)' }}
+          />
+        )}
+        <h3 style={{
+          margin: '0 0 6px 0', fontSize: '16px', lineHeight: '1.2',
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+        }}>{product.name}</h3>
+        <p style={{
+          margin: '0 0 4px 0', fontSize: '0.7rem', color: '#666',
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+        }}>{product.description}</p>
+      </div>
+      <div>
+        <p style={{ fontWeight: 'bold', margin: '6px 0', fontSize: '16px', color: 'var(--color-green)' }}>
+          KSh {product.price}
+        </p>
+        <div style={{ display: 'flex', gap: '6px' }}>
+          <button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="btn btn-primary" style={{ flex: 1 }}>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const productsByCategory = categories
+  .filter((cat) => cat !== 'all')
+  .map((cat) => ({
+    category: cat,
+    items: products.filter((p) => p.category === cat),
+  }))
+  .filter((group) => group.items.length > 0);
+
 const filteredProducts = products.filter((p) => {
   const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
   const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
@@ -155,56 +217,26 @@ const filteredProducts = products.filter((p) => {
   </div>
 )}
 
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
-      {filteredProducts.map((product) => {
-        const isSaved = wishlistIds.includes(product.id);
-        return (
-          <div
-            key={product.id}
-            className="card"
-            style={{ padding: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', overflow: 'hidden', position: 'relative' }}
-            onClick={() => setSelectedProduct(product)}
-          >
-            <button
-  onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
-  style={{
-    position: 'absolute', top: '6px', right: '6px', background: 'rgba(255,255,255,0.85)',
-    border: 'none', borderRadius: '50%', width: '26px', height: '26px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', zIndex: 1, boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
-  }}
->
-  <Heart size={15} color={isSaved ? 'var(--color-red)' : '#888'} fill={isSaved ? 'var(--color-red)' : 'none'} />
-</button>
-            <div>
-              {product.image_url && (
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  style={{ width: '100%', height: '90px', objectFit: 'cover', borderRadius: '4px', marginBottom: '6px', border: '2px solid var(--color-ink)' }}
-                />
-              )}
-              <h3 style={{
-                margin: '0 0 3px 0', fontSize: '0.8rem', lineHeight: '1.2',
-                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
-              }}>{product.name}</h3>
-              <p style={{
-                margin: '0 0 4px 0', fontSize: '0.7rem', color: '#666',
-                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
-              }}>{product.description}</p>
-            </div>
-            <div>
-              <p style={{ fontWeight: 'bold', margin: '4px 0', fontSize: '0.85rem', color: 'var(--color-green)' }}>
-                KSh {product.price}
-              </p>
-              <button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="btn btn-primary" style={{ width: '100%', padding: '5px', fontSize: '0.7rem' }}>
-                Add to Cart
-              </button>
+{isBrowsing ? (
+      <>
+        {productsByCategory.map((group) => (
+          <div key={group.category} style={{ marginBottom: '25px' }}>
+            <h2 style={{ fontSize: '1.1rem', marginBottom: '10px', paddingBottom: '6px', borderBottom: '3px solid var(--color-marigold)' }}>
+              {group.category}
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 220px))', gap: '20px' }}>
+              {group.items.map((product) => renderProductCard(product))}
             </div>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </>
+    ) : (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 220px))', gap: '20px' }}>
+        {filteredProducts.map((product) => renderProductCard(product))}
+      </div>
+    )}
+
+    <div style={{ height: '60px' }} />
 
       <div style={{
   position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
