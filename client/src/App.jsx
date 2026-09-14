@@ -237,10 +237,8 @@ const filteredProducts = products.filter((p) => {
       </div>
     )}
 
-    <div style={{ height: '60px' }} />
-
-      <div style={{
-  position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
+    <div style={{
+    position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
   display: 'flex', justifyContent: 'space-around', alignItems: 'center',
   background: '#fff', borderTop: '3px solid var(--color-ink)',
   boxShadow: '0 -2px 0px var(--color-ink)', padding: '8px 0'
@@ -296,7 +294,6 @@ const filteredProducts = products.filter((p) => {
       </div>
     )}
 
-    <div style={{ height: '60px' }} />
 
       {activeView === 'shop' && selectedProduct && (
   <ProductDetailView
@@ -311,15 +308,16 @@ const filteredProducts = products.filter((p) => {
 {activeView === 'my-products' && <MyProductsView />}
 {activeView === 'analytics' && <AnalyticsView />}
 {activeView === 'admin' && userRole === 'admin' && <AdminView />}
-{activeView === 'wishlist' && <WishlistView onAddToCart={addToCart} />}
+{activeView === 'wishlist' && <WishlistView addToCart={addToCart} />}
 
-      <footer style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px solid var(--color-ink)', textAlign: 'center', fontSize: '13px', color: '#888' }}>
-        <p style={{ margin: '0 0 4px 0' }}>Built by Lerionka</p>
+    <div style={{ height: '70px' }} />
+
+    <footer style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px solid var(--color-ink)', textAlign: 'center', fontSize: '13px', color: '#888' }}>
+      <p style={{ margin: '0 0 4px 0' }}>Built by Lerionka</p>
         <p style={{ margin: 0 }}>
           Questions or feedback? <a href="mailto:lerionkareteti@gmail.com" style={{ color: 'var(--color-green)', fontWeight: 'bold' }}>lerionkareteti@gmail.com</a>
         </p>
       </footer>
-    </div>
+  </div>
   );
 }
-
